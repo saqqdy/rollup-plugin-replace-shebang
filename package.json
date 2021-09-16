@@ -1,0 +1,38 @@
+{
+	"name": "rollup-plugin-replace-string",
+	"version": "1.0.0",
+	"description": "Automatically preserve a shebang in your entry file.",
+	"main": "index.js",
+	"module": "index.mjs",
+	"exports": {
+		"import": "./index.mjs",
+		"default": "./index.js"
+	},
+	"files": [
+		"index.mjs",
+		"index.js"
+	],
+	"scripts": {
+		"prepare": "cjyes",
+		"test": "eslint index.mjs",
+		"release": "npm run -s prepare && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+	},
+	"keywords": [
+		"rollup",
+		"plugin",
+		"shebang",
+		"hashbang"
+	],
+	"repository": "developit/rollup-plugin-replace-string",
+	"author": "saqqdy <saqqdy@qq.com> (https://www.saqqdy.com)",
+	"license": "MIT",
+	"dependencies": {
+		"magic-string": "^0.25.7"
+	},
+	"devDependencies": {
+		"cjyes": "^0.3.1",
+		"eslint": "^7.0.0",
+		"eslint-config-developit": "^1.2.0",
+		"rollup": "^2.10.5"
+	}
+}
