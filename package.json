@@ -25,13 +25,15 @@
 	},
 	"files": [
 		"dist",
-		"es"
+		"es",
+		"typings"
 	],
 	"directories": {
 		"es": "es",
 		"lib": "lib",
 		"dist": "dist",
-		"src": "src"
+		"src": "src",
+		"typings": "typings"
 	},
 	"dependencies": {
 		"magic-string": "^0.25.7"
