@@ -1,6 +1,6 @@
 # rollup-plugin-replace-shebang
 
-一个自动替换 shebang 的 rollup 插件
+一个自动替换`shebang`的`rollup`插件
 
 [![NPM version][npm-image]][npm-url]
 [![Codacy Badge][codacy-image]][codacy-url]
@@ -45,10 +45,10 @@ $ yarn add -D rollup-plugin-replace-shebang
 ## 使用
 
 ```js
-import replaceString from 'rollup-plugin-replace-shebang'
+import shebang from 'rollup-plugin-replace-shebang'
 
 plugins: [
-	replaceString({
+	shebang({
 		shebang: '#!/usr/bin/env node',
 		skipBackslash: true // 跳过\u005c 反斜杠
 	})
