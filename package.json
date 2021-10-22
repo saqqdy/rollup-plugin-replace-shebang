@@ -1,10 +1,11 @@
 {
 	"name": "rollup-plugin-replace-string",
 	"version": "1.0.0",
-	"description": "Automatically preserve a shebang in your entry file.",
+	"description": "一个自动替换shebang的rollup插件",
 	"main": "dist/index.js",
 	"unpkg": "dist/index.js",
 	"module": "dist/index.esm.js",
+	"typings": "dist/index.d.ts",
 	"scripts": {
 		"release": "npm run -s prepare && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
 		"build": "rimraf dist es && rollup -c",
@@ -75,7 +76,8 @@
 		"plugin",
 		"replace",
 		"shebang",
-		"hashbang"
+		"hashbang",
+		"saqqdy"
 	],
 	"author": "saqqdy <saqqdy@qq.com> (https://www.saqqdy.com)",
 	"license": "MIT",
