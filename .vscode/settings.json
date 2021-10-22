@@ -1,0 +1,8 @@
+{
+	"cSpell.words": ["saqqdy", "esno", "vuepress", "typedoc", "esbuild"],
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+	"npm.packageManager": "yarn"
+}
