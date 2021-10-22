@@ -6,7 +6,6 @@
 [![Codacy Badge][codacy-image]][codacy-url]
 [![build status][travis-image]][travis-url]
 [![Test coverage][codecov-image]][codecov-url]
-[![David deps][david-image]][david-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
 [![gzip][gzip-image]][gzip-url]
@@ -22,8 +21,6 @@
 [travis-url]: https://travis-ci.com/saqqdy/rollup-plugin-replace-shebang
 [codecov-image]: https://img.shields.io/codecov/c/github/saqqdy/rollup-plugin-replace-shebang.svg?style=flat-square
 [codecov-url]: https://codecov.io/github/saqqdy/rollup-plugin-replace-shebang?branch=master
-[david-image]: https://img.shields.io/david/saqqdy/rollup-plugin-replace-shebang.svg?style=flat-square
-[david-url]: https://david-dm.org/saqqdy/rollup-plugin-replace-shebang
 [snyk-image]: https://snyk.io/test/npm/rollup-plugin-replace-shebang/badge.svg?style=flat-square
 [snyk-url]: https://snyk.io/test/npm/rollup-plugin-replace-shebang
 [download-image]: https://img.shields.io/npm/dm/rollup-plugin-replace-shebang.svg?style=flat-square
