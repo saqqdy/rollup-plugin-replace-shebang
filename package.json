@@ -1,5 +1,5 @@
 {
-	"name": "rollup-plugin-replace-string",
+	"name": "rollup-plugin-replace-shebang",
 	"version": "1.0.0",
 	"description": "一个自动替换shebang的rollup插件",
 	"main": "dist/index.js",
@@ -69,7 +69,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/saqqdy/rollup-plugin-replace-string.git"
+		"url": "git+https://github.com/saqqdy/rollup-plugin-replace-shebang.git"
 	},
 	"keywords": [
 		"rollup",
@@ -82,7 +82,7 @@
 	"author": "saqqdy <saqqdy@qq.com> (https://www.saqqdy.com)",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/saqqdy/rollup-plugin-replace-string/issues"
+		"url": "https://github.com/saqqdy/rollup-plugin-replace-shebang/issues"
 	},
-	"homepage": "https://github.com/saqqdy/rollup-plugin-replace-string#readme"
+	"homepage": "https://github.com/saqqdy/rollup-plugin-replace-shebang#readme"
 }
