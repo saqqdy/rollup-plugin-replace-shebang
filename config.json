@@ -1,4 +1,4 @@
 {
-    "extensions": [".js", ".jsx", ".ts", ".tsx", ".es6", ".es", ".mjs", ".ts", ".json"],
-    "externals": {}
+	"extensions": [".js", ".jsx", ".ts", ".tsx", ".es6", ".es", ".mjs", ".ts", ".json"],
+	"externals": {}
 }

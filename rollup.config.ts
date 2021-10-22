@@ -20,7 +20,7 @@ export default [
 				format: 'cjs'
 			},
 			{
-				file: 'lib/index.esm.js',
+				file: 'dist/index.esm.js',
 				exports: 'auto',
 				format: 'es'
 			}

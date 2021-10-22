@@ -10,6 +10,7 @@ yarn-error.log
 selenium-debug.log
 
 /lib
+/dist
 /es
 *.bak
 *.bak.js

@@ -1,31 +1,42 @@
 import MagicString from 'magic-string'
+import type { Plugin } from 'rollup'
+
+export interface ReplaceStringOptions {
+	shebang?: string
+	skipBackslash?: boolean
+}
 
 /**
- * A rollup plugin that preserves shebang/hashbang prefixes in your entry modules.
- * @param {object} [options]
- * @param {string} [options.shebang] A custom shebang/hashbang to use in place of the detected one.
- * @returns {import('rollup').Plugin}
+ * 一个自动替换shebang的rollup插件
+ *
+ * @param options - 配置参数
+ * @returns Plugin - 插件
  */
-export default function replaceStringPlugin(options = {}) {
+export default function replaceStringPlugin(options: ReplaceStringOptions = {}): Plugin {
 	const contextMap = new Map()
 	return {
 		name: 'replace-string',
-		transform(code, moduld) {
+		transform(code, moduleID) {
 			let shebang
 			code = code.replace(/^#![^\n]*/, match => ((shebang = match), ''))
+			if (options.skipBackslash) {
+				code = code.replace(/(\\u005c|\\\\)/g, (a, b) => '__u005c__')
+			}
 			if (!shebang) return null
-			contextMap.set(moduld, shebang)
+			contextMap.set(moduleID, { shebang })
 			return { code, map: null }
 		},
 		renderChunk(code, chunk, { sourcemap }) {
-			let shebang = contextMap.get(chunk.facadeModuleId)
-			console.log(44, shebang)
+			let { shebang } = contextMap.get(chunk.facadeModuleId) || {}
 			if (!shebang) return null
-			const s = new MagicString(code)
-			s.prepend(`${options.shebang || shebang}\n`)
+			if (options.skipBackslash) {
+				code = code.replace(/__u005c__/g, () => '\\u005c')
+			}
+			const ms = new MagicString(code)
+			ms.prepend(`${options.shebang || shebang}\n`)
 			return {
-				code: s.toString(),
-				map: sourcemap ? s.generateMap({ hires: true }) : null
+				code: ms.toString(),
+				map: sourcemap ? ms.generateMap({ hires: true }) : null
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 /lib
+/dist
 /es
 *.bak
 *.bak.js

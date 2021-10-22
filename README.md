@@ -17,7 +17,7 @@
 [npm-image]: https://img.shields.io/npm/v/axios-ex.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/axios-ex
 [codacy-image]: https://app.codacy.com/project/badge/Grade/f70d4880e4ad4f40aa970eb9ee9d0696
-[codacy-url]: https://www.codacy.com/gh/saqqdy/axios-ex/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=saqqdy/axios-ex&amp;utm_campaign=Badge_Grade
+[codacy-url]: https://www.codacy.com/gh/saqqdy/axios-ex/dashboard?utm_source=github.com&utm_medium=referral&utm_content=saqqdy/axios-ex&utm_campaign=Badge_Grade
 [travis-image]: https://travis-ci.com/saqqdy/axios-ex.svg?branch=master
 [travis-url]: https://travis-ci.com/saqqdy/axios-ex
 [codecov-image]: https://img.shields.io/codecov/c/github/saqqdy/axios-ex.svg?style=flat-square
@@ -64,7 +64,7 @@ import axiosExtend from 'axios-ex'
  * @param {object} instance AxiosInstance
  */
 function setHeaders(instance) {
-    instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+	instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 }
 /**
  * 请求拦截器
@@ -74,8 +74,8 @@ function setHeaders(instance) {
  * @returns AxiosRequestConfig
  */
 function onRequest(config, options = {}) {
-    // some codes
-    return config
+	// some codes
+	return config
 }
 /**
  * 请求错误时执行
@@ -83,7 +83,7 @@ function onRequest(config, options = {}) {
  * @param {object} err Error
  */
 function onRequestError(err) {
-    // handler request error
+	// handler request error
 }
 /**
  * 响应拦截器
@@ -93,8 +93,8 @@ function onRequestError(err) {
  * @returns Promise<unknown>
  */
 function onResponse(res, options = {}) {
-    if (res.data.success) return res.data
-    return Promise.reject(res.data)
+	if (res.data.success) return res.data
+	return Promise.reject(res.data)
 }
 /**
  * 响应错误时执行
@@ -102,7 +102,7 @@ function onResponse(res, options = {}) {
  * @param {object} err Error
  */
 function onResponseError(err) {
-    // handler response error
+	// handler response error
 }
 /**
  * 请求错误或响应错误都执行
@@ -110,7 +110,7 @@ function onResponseError(err) {
  * @param {object} err Error
  */
 function onError(err) {
-    // handler request & response error
+	// handler request & response error
 }
 /**
  * 请求取消
@@ -118,30 +118,30 @@ function onError(err) {
  * @param {object} err Error
  */
 function onCancel(err) {
-    console.error(err.message)
+	console.error(err.message)
 }
 
 // 实例化
 const axiosEx = new axiosExtend({
-    maxConnections: 30, // 最大同时请求数，默认：0=不限制
-    unique: true, // 是否取消前面的相似请求，默认：false
-    retries: 0, // 重试次数，默认：0=不重试
-    orderly: false, // 是否有序返回，默认：true
-    setHeaders, // 设置请求头的方法
-    onRequest, // 请求拦截器
-    onRequestError, // 请求错误时执行
-    onResponse, // 响应拦截器
-    onResponseError, // 响应错误时执行
-    onError, // 请求错误或响应错误都执行
-    onCancel // 请求取消时的回调
+	maxConnections: 30, // 最大同时请求数，默认：0=不限制
+	unique: true, // 是否取消前面的相似请求，默认：false
+	retries: 0, // 重试次数，默认：0=不重试
+	orderly: false, // 是否有序返回，默认：true
+	setHeaders, // 设置请求头的方法
+	onRequest, // 请求拦截器
+	onRequestError, // 请求错误时执行
+	onResponse, // 响应拦截器
+	onResponseError, // 响应错误时执行
+	onError, // 请求错误或响应错误都执行
+	onCancel // 请求取消时的回调
 })
 
 export default options => {
-    // 这里设置 unique 和 orderly 优先级高于实例化时候的配置
-    options.unique = options.unique ?? false
-    options.orderly = options.orderly ?? false
-    // 这里的unique优先级更高
-    return axiosEx.create(options)
+	// 这里设置 unique 和 orderly 优先级高于实例化时候的配置
+	options.unique = options.unique ?? false
+	options.orderly = options.orderly ?? false
+	// 这里的unique优先级更高
+	return axiosEx.create(options)
 }
 ```
 
@@ -152,11 +152,11 @@ export default options => {
     ```js
     // 实例化的时候配置
     const axiosEx = new axiosExtend({
-        // ...
-        retryDelay: retryCount => {
-            return retryCount * 1000
-        }
-        // ...
+    	// ...
+    	retryDelay: retryCount => {
+    		return retryCount * 1000
+    	}
+    	// ...
     })
     ```
 
@@ -166,9 +166,9 @@ export default options => {
     import axiosExtend, { exponentialDelay } from 'axios-ex'
     // 实例化的时候配置
     const axiosEx = new axiosExtend({
-        // ...
-        retryDelay: exponentialDelay
-        // ...
+    	// ...
+    	retryDelay: exponentialDelay
+    	// ...
     })
     ```
 
@@ -182,33 +182,33 @@ import axiosExtend from 'axios-ex'
 let axiosEx = null
 // 请求拦截器
 function onRequest(config, options = {}) {
-    // this => vueInstance
-    return config
+	// this => vueInstance
+	return config
 }
 // 响应拦截器
 function onResponse(res, options = {}) {
-    // 隐藏loading动画
-    if (this instanceof Vue) {
-        this.$loader.hide()
-    }
-    if (res.data.success) return res.data
-    return Promise.reject(res.data)
+	// 隐藏loading动画
+	if (this instanceof Vue) {
+		this.$loader.hide()
+	}
+	if (res.data.success) return res.data
+	return Promise.reject(res.data)
 }
 
 export default options => {
-    // 只需要初始化一次
-    if (!axiosEx)
-        axiosEx = new axiosExtend({
-            onRequest: onRequest.bind(this),
-            onResponse: onResponse.bind(this)
-            //...
-        })
+	// 只需要初始化一次
+	if (!axiosEx)
+		axiosEx = new axiosExtend({
+			onRequest: onRequest.bind(this),
+			onResponse: onResponse.bind(this)
+			//...
+		})
 
-    // 显示loading动画
-    if (this instanceof Vue) {
-        this.$loader.show()
-    }
-    return axiosEx.create(options)
+	// 显示loading动画
+	if (this instanceof Vue) {
+		this.$loader.show()
+	}
+	return axiosEx.create(options)
 }
 ```
 
