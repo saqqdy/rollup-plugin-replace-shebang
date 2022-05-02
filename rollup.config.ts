@@ -20,7 +20,7 @@ export default [
 				format: 'cjs'
 			},
 			{
-				file: 'dist/index.mjs',
+				file: 'es/index.mjs',
 				exports: 'auto',
 				format: 'es'
 			}

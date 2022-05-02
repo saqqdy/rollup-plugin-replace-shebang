@@ -2,6 +2,8 @@
 .idea/
 node_modules/
 dist/
+es/
+lib/
 npm-debug.log
 yarn.lock
 yarn-error.log
@@ -10,7 +12,6 @@ pnpm-lock.yaml
 /test/e2e/reports/
 selenium-debug.log
 
-!dist
 *.bak
 *.bak.js
 *_bak
