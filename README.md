@@ -48,10 +48,10 @@ $ yarn add -D rollup-plugin-replace-shebang
 import shebang from 'rollup-plugin-replace-shebang'
 
 plugins: [
-	shebang({
-		shebang: '#!/usr/bin/env node',
-		skipBackslash: true // 跳过\u005c 反斜杠
-	})
+    shebang({
+        shebang: '#!/usr/bin/env node',
+        skipBackslash: true // 跳过\u005c 反斜杠
+    })
 ]
 ```
 

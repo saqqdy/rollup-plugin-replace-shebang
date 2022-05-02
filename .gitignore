@@ -5,6 +5,7 @@ dist/
 npm-debug.log
 yarn.lock
 yarn-error.log
+pnpm-lock.yaml
 /test/unit/coverage/
 /test/e2e/reports/
 selenium-debug.log

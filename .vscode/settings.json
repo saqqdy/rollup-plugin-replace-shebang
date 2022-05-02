@@ -1,5 +1,14 @@
 {
-	"cSpell.words": ["saqqdy", "esno", "vuepress", "typedoc", "esbuild"],
+	"cSpell.words": [
+		"Builtins",
+		"esbuild",
+		"esno",
+		"saqqdy",
+		"tscjs",
+		"tsnd",
+		"typedoc",
+		"vuepress"
+	],
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true

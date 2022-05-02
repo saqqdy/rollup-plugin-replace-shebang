@@ -20,7 +20,7 @@ export default [
 				format: 'cjs'
 			},
 			{
-				file: 'dist/index.esm.js',
+				file: 'dist/index.mjs',
 				exports: 'auto',
 				format: 'es'
 			}
@@ -44,7 +44,13 @@ export default [
 						target: 'es6'
 					},
 					include: ['src/**/*.ts'],
-					exclude: ['node_modules', '__tests__', 'core-js', 'js-cool', 'axios']
+					exclude: [
+						'node_modules',
+						'__tests__',
+						'core-js',
+						'js-cool',
+						'axios'
+					]
 				},
 				abortOnError: false
 			}),
@@ -57,9 +63,14 @@ export default [
 			}),
 			visualizer()
 		],
-		// @ts-ignore
+		// @ts-expect-error
 		external(id) {
-			return ['core-js', 'magic-string', 'js-cool', 'regenerator-runtime'].some(k => new RegExp('^' + k).test(id))
+			return [
+				'core-js',
+				'magic-string',
+				'js-cool',
+				'regenerator-runtime'
+			].some(k => new RegExp('^' + k).test(id))
 		}
 	}
 ]

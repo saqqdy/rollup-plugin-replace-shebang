@@ -1,7 +1,7 @@
 import MagicString from 'magic-string'
 import type { Plugin } from 'rollup'
 
-export interface ReplaceStringOptions {
+export interface Options {
 	shebang?: string
 	skipBackslash?: boolean
 }
@@ -12,22 +12,22 @@ export interface ReplaceStringOptions {
  * @param options - 配置参数
  * @returns Plugin - 插件
  */
-export default function replaceStringPlugin(options: ReplaceStringOptions = {}): Plugin {
+export default function replaceStringPlugin(options: Options = {}): Plugin {
 	const contextMap = new Map()
 	return {
-		name: 'replace-string',
+		name: 'replace-shebang',
 		transform(code, moduleID) {
 			let shebang
 			code = code.replace(/^#![^\n]*/, match => ((shebang = match), ''))
 			if (options.skipBackslash) {
-				code = code.replace(/(\\u005c|\\\\)/g, (a, b) => '__u005c__')
+				code = code.replace(/(\\u005c|\\\\)/g, () => '__u005c__')
 			}
 			if (!shebang) return null
 			contextMap.set(moduleID, { shebang })
 			return { code, map: null }
 		},
 		renderChunk(code, chunk, { sourcemap }) {
-			let { shebang } = contextMap.get(chunk.facadeModuleId) || {}
+			const { shebang } = contextMap.get(chunk.facadeModuleId) || {}
 			if (!shebang) return null
 			if (options.skipBackslash) {
 				code = code.replace(/__u005c__/g, () => '\\u005c')

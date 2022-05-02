@@ -1,9 +1,6 @@
 {
 	"extends": "../tsconfig.json",
-	"include": ["./**/*.ts", "../typings", "./*.d.ts"],
-	"exclude": ["node_modules", "**/__tests__", "../temp"],
 	"compilerOptions": {
-		// compile away optional-chaining-operator
 		"target": "es6",
 		"outDir": "../dist",
 		// "module": "commonjs",

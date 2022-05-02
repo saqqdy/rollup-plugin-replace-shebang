@@ -10,14 +10,14 @@ import MagicString from 'magic-string';
 function replaceStringPlugin(options = {}) {
   const contextMap = new Map();
   return {
-    name: 'replace-string',
+    name: 'replace-shebang',
 
     transform(code, moduleID) {
       let shebang;
       code = code.replace(/^#![^\n]*/, match => (shebang = match, ''));
 
       if (options.skipBackslash) {
-        code = code.replace(/(\\u005c|\\\\)/g, (a, b) => '__u005c__');
+        code = code.replace(/(\\u005c|\\\\)/g, () => '__u005c__');
       }
 
       if (!shebang) return null;
@@ -33,7 +33,7 @@ function replaceStringPlugin(options = {}) {
     renderChunk(code, chunk, {
       sourcemap
     }) {
-      let {
+      const {
         shebang
       } = contextMap.get(chunk.facadeModuleId) || {};
       if (!shebang) return null;
