@@ -27,7 +27,8 @@ export default function replaceStringPlugin(options: Options = {}): Plugin {
 			return { code, map: null }
 		},
 		renderChunk(code, chunk, { sourcemap }) {
-			const { shebang } = contextMap.get(chunk.facadeModuleId) || {}
+			const moduleID = chunk.facadeModuleId!.replace(/\?.+$/, '')
+			const { shebang } = contextMap.get(moduleID) || {}
 			if (!shebang) return null
 			if (options.skipBackslash) {
 				code = code.replace(/__u005c__/g, () => '\\u005c')

@@ -1,7 +1,7 @@
 {
 	"name": "rollup-plugin-replace-shebang",
 	"description": "一个自动替换shebang的rollup插件",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"main": "lib/index.js",
 	"module": "es/index.mjs",
 	"typings": "typings/index.d.ts",

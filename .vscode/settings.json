@@ -3,6 +3,7 @@
 		"Builtins",
 		"esbuild",
 		"esno",
+		"hashbang",
 		"saqqdy",
 		"tscjs",
 		"tsdoc",
