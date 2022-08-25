@@ -1,8 +1,8 @@
-import type { Plugin as Plugin_2 } from 'rollup';
+import type { Plugin as Plugin_2 } from 'rollup'
 
 export declare interface Options {
-    shebang?: string;
-    skipBackslash?: boolean;
+	shebang?: string
+	skipBackslash?: boolean
 }
 
 /**
@@ -11,7 +11,7 @@ export declare interface Options {
  * @param options - 配置参数
  * @returns Plugin - 插件
  */
-declare function replaceStringPlugin(options?: Options): Plugin_2;
-export default replaceStringPlugin;
+declare function replaceStringPlugin(options?: Options): Plugin_2
+export default replaceStringPlugin
 
-export { }
+export {}
