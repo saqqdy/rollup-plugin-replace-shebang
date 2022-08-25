@@ -4,3 +4,6 @@
 *.bak
 *.bak.js
 *_bak
+
+pnpm-lock.yaml
+stats.html

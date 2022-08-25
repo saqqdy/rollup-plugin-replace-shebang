@@ -9,6 +9,8 @@
 		"tsdoc",
 		"tsnd",
 		"typedoc",
+		"unpub",
+		"unpublish",
 		"vuepress"
 	],
 	"typescript.tsdk": "node_modules/typescript/lib",

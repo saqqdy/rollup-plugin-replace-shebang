@@ -2,6 +2,7 @@
 	"name": "rollup-plugin-replace-shebang",
 	"description": "一个自动替换shebang的rollup插件",
 	"version": "1.1.1",
+	"packageManager": "pnpm@7.7.0",
 	"main": "lib/index.js",
 	"module": "es/index.mjs",
 	"typings": "typings/index.d.ts",
@@ -24,6 +25,9 @@
 		"patch-types": "node script/patchTypes",
 		"roll-types": "api-extractor run && rimraf temp",
 		"dev": "rollup -c -w",
+		"pub": "tscjs scripts/publish",
+		"unpub": "tscjs scripts/unpublish",
+		"sync": "tscjs scripts/sync",
 		"dist": "run-s eslint prettier build build:types",
 		"docs": "rimraf docs && typedoc",
 		"eslint": "eslint --fix --ext .ts,.js",
@@ -49,12 +53,12 @@
 		"@rollup/plugin-babel": "^5.3.1",
 		"@rollup/plugin-commonjs": "^22.0.0",
 		"@rollup/plugin-node-resolve": "^13.2.1",
-		"@saqqdy/prettier-config": "^1.1.2",
 		"@types/node": "^17.0.31",
 		"esbuild": "^0.14.38",
 		"eslint": "^8.14.0",
 		"npm-run-all": "^4.1.5",
 		"prettier": "^2.6.2",
+		"prettier-config-common": "^1.2.1",
 		"rimraf": "^3.0.2",
 		"rollup": "^2.71.1",
 		"rollup-plugin-terser": "^7.0.2",
@@ -76,6 +80,17 @@
 		"hashbang",
 		"saqqdy"
 	],
+	"pnpm": {
+		"peerDependencyRules": {
+			"ignoreMissing": [
+				"tslib",
+				"webpack"
+			],
+			"allowedVersions": {
+				"eslint": "^8.0.0"
+			}
+		}
+	},
 	"license": "MIT",
 	"author": "saqqdy <saqqdy@qq.com> (https://github.com/saqqdy)",
 	"repository": {
