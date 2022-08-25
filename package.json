@@ -1,7 +1,7 @@
 {
 	"name": "rollup-plugin-replace-shebang",
 	"description": "一个自动替换shebang的rollup插件",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"packageManager": "pnpm@7.7.0",
 	"main": "lib/index.js",
 	"module": "es/index.mjs",
