@@ -42,7 +42,7 @@
 		"typings": "typings"
 	},
 	"dependencies": {
-		"magic-string": "^0.27.0"
+		"magic-string": "^0.29.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.18.13",
