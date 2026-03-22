@@ -1,51 +1,43 @@
-name: Npm publish
+name: Publish
 
 on:
   release:
     types: [created]
-    # push:
-    #     branches: [master]
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
-  publish-gpr:
+  publish:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.7.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmmirror.com
+          node-version: 22
+          registry-url: https://registry.npmjs.org
           cache: pnpm
 
-      - run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-      # - run: npx changelogithub --no-group
-      #   continue-on-error: true
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Build
+        run: pnpm run dist
 
-      - run: pnpm run dist
+      - name: Publish to npm
+        run: pnpm publish --provenance --access public
         env:
-          NODE_OPTIONS: --max-old-space-size=6144
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Gen .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ./.npmrc
-
-      - run: pnpm pub
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - run: curl -X PUT -d "sync_upstream=true" "https://registry-direct.npmmirror.com/rollup-plugin-replace-shebang/sync"
+      - name: Sync to npmmirror
+        run: curl -X PUT -d "sync_upstream=true" "https://registry-direct.npmmirror.com/rollup-plugin-replace-shebang/sync"

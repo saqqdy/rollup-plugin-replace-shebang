@@ -1,8 +1,9 @@
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
+
 let [, , versionText] = process.argv
 
 if (!versionText) process.exit(1)
-versionText = versionText.replace(/\"/g, '')
+versionText = versionText.replace(/"/g, '')
 const versions = versionText.split(',')
 
 const REGISTRY_URL = 'https://registry.npmjs.org'

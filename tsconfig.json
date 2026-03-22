@@ -1,23 +1,27 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
-		"target": "es5",
-		"moduleResolution": "node",
-		// "lib": ["es5", "es6", "dom", "dom.iterable", "esnext"],
-		"noLib": false,
-		"lib": ["ESNext", "dom"],
-		"sourceMap": true,
-		// "module": "commonjs",
+		"target": "ES2022",
 		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"lib": ["ES2023"],
 		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true,
 		"resolveJsonModule": true,
 		"declaration": true,
-		"noImplicitOverride": true,
+		"declarationMap": true,
+		"sourceMap": true,
 		"noUnusedLocals": true,
-		"esModuleInterop": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"allowSyntheticDefaultImports": true
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"forceConsistentCasingInFileNames": true
 	},
-	"exclude": ["temp"]
+	"include": ["src"],
+	"exclude": ["node_modules", "dist", "test", "scripts"]
 }

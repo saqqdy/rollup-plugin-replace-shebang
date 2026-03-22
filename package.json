@@ -1,98 +1,67 @@
 {
 	"name": "rollup-plugin-replace-shebang",
-	"description": "一个自动替换shebang的rollup插件",
-	"version": "1.2.0",
-	"packageManager": "pnpm@7.7.0",
-	"main": "lib/index.js",
-	"module": "es/index.mjs",
-	"typings": "typings/index.d.ts",
+	"description": "A Rollup plugin that preserves and relocates shebang to the output bundle.",
+	"version": "2.0.0",
+	"packageManager": "pnpm@9.15.0",
+	"type": "module",
+	"main": "dist/index.cjs",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.mts",
 	"exports": {
-		"import": "./es/index.mjs",
-		"default": "./lib/index.js"
+		".": {
+			"types": {
+				"import": "./dist/index.d.mts",
+				"require": "./dist/index.d.cts"
+			},
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
 	},
 	"files": [
-		"dist",
-		"es",
-		"lib",
-		"typings"
+		"dist"
 	],
 	"scripts": {
-		"release": "npm run -s prepare && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-		"gen:version": "tscjs scripts/version",
-		"build": "rimraf dist es lib && rollup -c",
-		"build:types": "run-s build-temp-types roll-types",
-		"build-temp-types": "tsc --emitDeclarationOnly --outDir temp/ -p src/",
-		"patch-types": "node script/patchTypes",
-		"roll-types": "api-extractor run && rimraf temp",
-		"dev": "rollup -c -w",
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
+		"test:compat": "npx tsx scripts/test-compat.ts",
 		"pub": "tscjs scripts/publish",
 		"unpub": "tscjs scripts/unpublish",
 		"sync": "tscjs scripts/sync",
-		"dist": "run-s eslint prettier build build:types",
-		"docs": "rimraf docs && typedoc",
-		"eslint": "eslint --fix --ext .ts,.js",
-		"prettier": "prettier --write \"**/*.{js,ts,json,md}\"",
-		"prettier:docs": "prettier --write \"**/*.md\""
-	},
-	"directories": {
-		"es": "es",
-		"lib": "lib",
-		"dist": "dist",
-		"src": "src",
-		"typings": "typings"
+		"lint": "eslint --fix",
+		"dist": "pnpm run lint && pnpm run build",
+		"prepublishOnly": "pnpm run build"
 	},
 	"dependencies": {
-		"magic-string": "^0.26.2"
+		"magic-string": "^0.30.17"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.18.13",
-		"@babel/preset-env": "^7.18.10",
-		"@babel/preset-typescript": "^7.18.6",
-		"@eslint-sets/eslint-config-simple-ts": "^3.0.4",
-		"@microsoft/api-extractor": "^7.29.5",
-		"@rollup/plugin-babel": "^5.3.1",
-		"@rollup/plugin-commonjs": "^22.0.2",
-		"@rollup/plugin-node-resolve": "^13.3.0",
-		"@types/node": "^18.7.13",
-		"esbuild": "^0.15.5",
-		"eslint": "^8.22.0",
-		"npm-run-all": "^4.1.5",
-		"prettier": "^2.7.1",
-		"prettier-config-common": "^1.2.1",
-		"rimraf": "^3.0.2",
-		"rollup": "^2.78.1",
-		"rollup-plugin-terser": "^7.0.2",
-		"rollup-plugin-typescript2": "^0.33.0",
-		"rollup-plugin-visualizer": "^5.8.0",
-		"tsnd": "^1.1.0",
-		"typedoc": "^0.23.10",
-		"typedoc-plugin-markdown": "^3.13.4",
-		"typescript": "^4.7.4"
+		"@eslint-sets/eslint-config": "^6.2.0",
+		"@types/node": "^22.13.10",
+		"@vitest/coverage-v8": "^4.1.0",
+		"eslint": "^9.39.4",
+		"rollup": "^4.35.0",
+		"tsdown": "^0.21.4",
+		"tsx": "^4.21.0",
+		"typescript": "^5.8.2",
+		"vitest": "^4.1.0"
 	},
 	"peerDependencies": {
-		"rollup": ">= 2.0.0"
+		"rollup": ">=2.0.0"
 	},
 	"keywords": [
 		"rollup",
-		"plugin",
-		"replace",
+		"rollup-plugin",
 		"shebang",
 		"hashbang",
-		"saqqdy"
+		"cli",
+		"bundler"
 	],
-	"pnpm": {
-		"peerDependencyRules": {
-			"ignoreMissing": [
-				"tslib",
-				"webpack"
-			],
-			"allowedVersions": {
-				"eslint": "^8.0.0"
-			}
-		}
-	},
+	"sideEffects": false,
 	"license": "MIT",
-	"author": "saqqdy <saqqdy@qq.com> (https://github.com/saqqdy)",
+	"author": "saqqdy <https://github.com/saqqdy>",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/saqqdy/rollup-plugin-replace-shebang.git"

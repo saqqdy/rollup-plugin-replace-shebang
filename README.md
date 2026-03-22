@@ -1,46 +1,83 @@
-<div style="text-align: center;" align="center">
-
 # rollup-plugin-replace-shebang
 
-一个自动替换`shebang`的`rollup`插件
-
 [![NPM version][npm-image]][npm-url]
-[![Codacy Badge][codacy-image]][codacy-url]
-[![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
-[![gzip][gzip-image]][gzip-url]
 [![License][license-image]][license-url]
 
-[![Sonar][sonar-image]][sonar-url]
+A Rollup plugin that preserves and relocates shebang (`#!`) to the output bundle.
 
-</div>
+[简体中文](./README_CN.md)
 
-## 安装
+## Background
+
+When building CLI tools with Rollup, the shebang (`#!/usr/bin/env node`) at the top of your entry file gets removed during bundling. This plugin ensures your shebang is preserved in the final output.
+
+## Installation
 
 ```bash
-# 使用npm
-$ npm install -D rollup-plugin-replace-shebang
+# npm
+npm install -D rollup-plugin-replace-shebang
 
-# 使用yarn
-$ yarn add -D rollup-plugin-replace-shebang
+# pnpm
+pnpm add -D rollup-plugin-replace-shebang
 ```
 
-## 使用
+## Usage
 
 ```js
-import shebang from 'rollup-plugin-replace-shebang'
+import replaceShebang from 'rollup-plugin-replace-shebang'
 
-plugins: [
-    shebang({
-        shebang: '#!/usr/bin/env node',
-        skipBackslash: true // 跳过\u005c 反斜杠
+export default {
+  input: 'src/cli.js',
+  output: {
+    file: 'dist/cli.js',
+    format: 'es'
+  },
+  plugins: [
+    replaceShebang({
+      shebang: '#!/usr/bin/env node', // Custom shebang (optional)
+      skipBackslash: true // Preserve backslash escape sequences
     })
-]
+  ]
+}
 ```
 
-## 问题和支持
+## Options
 
-Please open an issue [here](https://github.com/saqqdy/rollup-plugin-replace-shebang/issues).
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `shebang` | `string` | Original shebang | Custom shebang to prepend to output |
+| `skipBackslash` | `boolean` | `false` | Preserve `\u005c` escape sequences |
+
+## How it works
+
+1. **Transform phase**: Extracts and removes shebang from source files
+2. **RenderChunk phase**: Prepends shebang to the output bundle
+
+## Example
+
+**Input (src/cli.js):**
+```js
+#!/usr/bin/env node
+import { program } from 'commander'
+
+program.parse()
+```
+
+**Output (dist/cli.js):**
+```js
+#!/usr/bin/env node
+// bundled code...
+```
+
+## Requirements
+
+- Rollup >= 2.0.0
+- Node.js >= 18
+
+## Feedback
+
+Feel free to submit an [Issue](https://github.com/saqqdy/rollup-plugin-replace-shebang/issues) for bugs or suggestions.
 
 ## License
 
@@ -48,15 +85,7 @@ Please open an issue [here](https://github.com/saqqdy/rollup-plugin-replace-sheb
 
 [npm-image]: https://img.shields.io/npm/v/rollup-plugin-replace-shebang.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/rollup-plugin-replace-shebang
-[codacy-image]: https://app.codacy.com/project/badge/Grade/f70d4880e4ad4f40aa970eb9ee9d0696
-[codacy-url]: https://www.codacy.com/gh/saqqdy/rollup-plugin-replace-shebang/dashboard?utm_source=github.com&utm_medium=referral&utm_content=saqqdy/rollup-plugin-replace-shebang&utm_campaign=Badge_Grade
-[codecov-image]: https://img.shields.io/codecov/c/github/saqqdy/rollup-plugin-replace-shebang.svg?style=flat-square
-[codecov-url]: https://codecov.io/github/saqqdy/rollup-plugin-replace-shebang?branch=master
 [download-image]: https://img.shields.io/npm/dm/rollup-plugin-replace-shebang.svg?style=flat-square
 [download-url]: https://npmjs.org/package/rollup-plugin-replace-shebang
-[gzip-image]: http://img.badgesize.io/https://unpkg.com/rollup-plugin-replace-shebang/lib/index.js?compression=gzip&label=gzip%20size:%20JS
-[gzip-url]: http://img.badgesize.io/https://unpkg.com/rollup-plugin-replace-shebang/lib/index.js?compression=gzip&label=gzip%20size:%20JS
 [license-image]: https://img.shields.io/badge/License-MIT-yellow.svg
 [license-url]: LICENSE
-[sonar-image]: https://sonarcloud.io/api/project_badges/quality_gate?project=saqqdy_rollup-plugin-replace-shebang
-[sonar-url]: https://sonarcloud.io/dashboard?id=saqqdy_rollup-plugin-replace-shebang
