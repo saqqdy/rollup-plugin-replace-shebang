@@ -2,10 +2,10 @@
 
 /**
  * Advanced CLI application with multiple features
- * Tests: basic shebang, chmod, include/exclude
+ * Tests: basic shebang, chmod, include/exclude, skipBackslash
  */
 
-import { greet, getVersion, getPluginInfo } from './utils.js'
+import { greet, getVersion, getPluginInfo, getWindowsPath } from './utils.js'
 import { formatOutput } from './formatter.js'
 
 const args = process.argv.slice(2)
@@ -21,6 +21,10 @@ switch (command) {
 	case 'info':
 		console.log(formatOutput(getPluginInfo()))
 		break
+	case 'path':
+		// Demo skipBackslash feature
+		console.log('Windows path:', getWindowsPath())
+		break
 	default:
 		console.log(`
 Usage: cli <command> [args]
@@ -29,6 +33,7 @@ Commands:
   greet <name>    Greet someone
   version         Show version
   info            Show plugin info
+  path            Show Windows path (skipBackslash demo)
 `)
 }
 

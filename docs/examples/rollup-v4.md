@@ -7,12 +7,27 @@ This example demonstrates usage with Rollup 4.x (latest version).
 - Default shebang preservation
 - chmod option
 - include/exclude patterns
-- Multi-file projects
+- skipBackslash option
+- warnOnMultiple option
+- Plugin API
 
 ## Configuration
 
 ```js
 import replaceShebang from 'rollup-plugin-replace-shebang'
+
+const plugin = replaceShebang({
+  // Use default shebang from source
+  chmod: true,
+  // Skip backslash processing (useful for Windows paths)
+  skipBackslash: true,
+  // Include only source files
+  include: ['src/**/*.js'],
+  // Exclude test files
+  exclude: ['src/**/*.test.js'],
+  // Warn when multiple files have shebangs
+  warnOnMultiple: true
+})
 
 export default {
   input: 'src/cli.js',
@@ -20,11 +35,7 @@ export default {
     file: 'dist/cli.js',
     format: 'es'
   },
-  plugins: [
-    replaceShebang({
-      chmod: true
-    })
-  ]
+  plugins: [plugin]
 }
 ```
 
@@ -34,7 +45,7 @@ export default {
 ```js
 #!/usr/bin/env node
 
-import { greet, getVersion, getPluginInfo } from './utils.js'
+import { greet, getVersion, getPluginInfo, getWindowsPath } from './utils.js'
 import { formatOutput } from './formatter.js'
 
 const args = process.argv.slice(2)
@@ -50,6 +61,9 @@ switch (command) {
   case 'info':
     console.log(formatOutput(getPluginInfo()))
     break
+  case 'path':
+    console.log('Windows path:', getWindowsPath())
+    break
   default:
     console.log(`
 Usage: cli <command> [args]
@@ -58,6 +72,7 @@ Commands:
   greet <name>    Greet someone
   version         Show version
   info            Show plugin info
+  path            Show Windows path (skipBackslash demo)
 `)
 }
 
@@ -83,10 +98,16 @@ export function getPluginInfo() {
       'shebang replacement',
       'include/exclude patterns',
       'chmod support',
+      'skipBackslash',
       'template variables',
       'plugin API'
     ]
   }
+}
+
+// Demo skipBackslash feature: Windows path with backslash
+export function getWindowsPath() {
+  return 'C:\\Users\\test\\file.txt'
 }
 ```
 :::
@@ -99,10 +120,6 @@ export function formatOutput(data) {
   }
   return String(data)
 }
-
-export function formatError(message) {
-  return `Error: ${message}`
-}
 ```
 :::
 
@@ -113,6 +130,7 @@ cd examples/rollup-v4
 pnpm install
 pnpm run build
 ./dist/cli.js info
+./dist/cli.js path    # Demo skipBackslash
 ```
 
 ## Output
@@ -125,6 +143,7 @@ pnpm run build
     "shebang replacement",
     "include/exclude patterns",
     "chmod support",
+    "skipBackslash",
     "template variables",
     "plugin API"
   ]

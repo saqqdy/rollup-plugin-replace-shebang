@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "rollup -c",
+		"build:api": "node build-with-api.js",
 		"start": "node dist/cli.js"
 	},
 	"devDependencies": {

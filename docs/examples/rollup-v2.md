@@ -4,15 +4,29 @@ This example demonstrates usage with Rollup 2.x (minimum supported version).
 
 ## Features Tested
 
-- Custom shebang with template variables
+- Custom shebang with template variables (`${name}`, `${version}`)
 - chmod option
-- include patterns
-- warnOnMultiple option
+- preserve option (commented in config)
+- Plugin API
 
 ## Configuration
 
 ```js
 import replaceShebang from 'rollup-plugin-replace-shebang'
+
+// Create plugin instance to access API
+const plugin = replaceShebang({
+  // Custom shebang with template variables
+  shebang: '#!/usr/bin/env node # Built with ${name} v${version}',
+  // Enable chmod for executable
+  chmod: true,
+  // Alternative: use preserve to keep original shebang
+  // preserve: true,
+})
+
+// Plugin API - access shebang info
+// plugin.api.getShebang('/path/to/file.js')
+// plugin.api.getAllShebangs()
 
 export default {
   input: 'src/cli.js',
@@ -20,15 +34,7 @@ export default {
     file: 'dist/cli.js',
     format: 'es'
   },
-  plugins: [
-    // Plugin must run first to remove shebang before parsing
-    replaceShebang({
-      // Custom shebang with template variables
-      shebang: '#!/usr/bin/env node # Built with ${name} v${version}',
-      // Enable chmod for executable
-      chmod: true
-    })
-  ]
+  plugins: [plugin]
 }
 ```
 
@@ -38,14 +44,13 @@ export default {
 ```js
 #!/usr/bin/env node
 
-import { greet, getVersion } from './utils.js'
+import { greet } from './utils.js'
 
 const args = process.argv.slice(2)
 const name = args[0] || 'World'
 
 console.log(greet(name))
-console.log(`Version: ${getVersion()}`)
-console.log('\nThis CLI was built with rollup v2.x')
+console.log('This CLI was built with rollup v2.x')
 ```
 :::
 
@@ -53,10 +58,6 @@ console.log('\nThis CLI was built with rollup v2.x')
 ```js
 export function greet(name) {
   return `Hello, ${name}!`
-}
-
-export function getVersion() {
-  return '1.0.0'
 }
 ```
 :::
@@ -66,17 +67,22 @@ export function getVersion() {
 ```bash
 cd examples/rollup-v2
 pnpm install
-pnpm run build
+pnpm run build           # Standard build
+pnpm run build:api       # Build with Plugin API demo
 ./dist/cli.js greet World
 ```
 
-## Output
+## Plugin API Demo
+
+Run `pnpm run build:api` to see the Plugin API in action:
 
 ```
-Hello, World!
-Version: 1.0.0
+=== Plugin API Demo ===
+Shebang from src/cli.js: #!/usr/bin/env node
+All shebangs:
+  /path/to/examples/rollup-v2/src/cli.js: #!/usr/bin/env node
 
-This CLI was built with rollup v2.x
+Build complete!
 ```
 
 ## Try Online

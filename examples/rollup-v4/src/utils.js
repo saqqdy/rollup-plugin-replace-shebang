@@ -23,3 +23,10 @@ export function getPluginInfo() {
 		]
 	}
 }
+
+// Test skipBackslash feature: Windows path with backslash
+// When skipBackslash: true, \u005c will be preserved
+export function getWindowsPath() {
+	// eslint-disable-next-line no-useless-escape
+	return 'C:\\Users\\test\\file.txt'
+}
