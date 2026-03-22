@@ -1,0 +1,16 @@
+{
+	"name": "example-rollup-v4",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "rollup -c",
+		"start": "node dist/cli.js"
+	},
+	"devDependencies": {
+		"rollup": "^4.35.0"
+	},
+	"dependencies": {
+		"rollup-plugin-replace-shebang": "link:../.."
+	}
+}

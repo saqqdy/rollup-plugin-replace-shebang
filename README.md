@@ -6,20 +6,29 @@
 
 A Rollup plugin that preserves and relocates shebang (`#!`) to the output bundle.
 
-[简体中文](./README_CN.md)
+[简体中文](./README_CN.md) | [Documentation](https://saqqdy.github.io/rollup-plugin-replace-shebang/)
 
 ## Background
 
 When building CLI tools with Rollup, the shebang (`#!/usr/bin/env node`) at the top of your entry file gets removed during bundling. This plugin ensures your shebang is preserved in the final output.
 
+## Online Examples
+
+Try the plugin online with StackBlitz:
+
+| Example | Description | Link |
+|---------|-------------|------|
+| rollup-v2 | Rollup 2.x with template variables | [Open in StackBlitz](https://stackblitz.com/github/saqqdy/rollup-plugin-replace-shebang/tree/master/examples/rollup-v2) |
+| rollup-v4 | Rollup 4.x multi-file project | [Open in StackBlitz](https://stackblitz.com/github/saqqdy/rollup-plugin-replace-shebang/tree/master/examples/rollup-v4) |
+
 ## Installation
 
 ```bash
-# npm
-npm install -D rollup-plugin-replace-shebang
-
 # pnpm
 pnpm add -D rollup-plugin-replace-shebang
+
+# npm
+npm install -D rollup-plugin-replace-shebang
 ```
 
 ## Usage
@@ -35,8 +44,9 @@ export default {
   },
   plugins: [
     replaceShebang({
-      shebang: '#!/usr/bin/env node', // Custom shebang (optional)
-      skipBackslash: true // Preserve backslash escape sequences
+      shebang: '#!/usr/bin/env node',
+      skipBackslash: true,
+      chmod: true
     })
   ]
 }
@@ -46,13 +56,53 @@ export default {
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `shebang` | `string` | Original shebang | Custom shebang to prepend to output |
+| `shebang` | `string` | Original shebang | Custom shebang to prepend. Supports template variables: `${name}`, `${version}` |
 | `skipBackslash` | `boolean` | `false` | Preserve `\u005c` escape sequences |
+| `preserve` | `boolean` | `false` | Preserve original shebang without modification |
+| `chmod` | `boolean` | `false` | Auto set executable permission (chmod +x) on output files |
+| `include` | `string \| string[]` | `['**/*.js', '**/*.ts', ...]` | Files to include |
+| `exclude` | `string \| string[]` | `['node_modules/**']` | Files to exclude |
+| `warnOnMultiple` | `boolean` | `true` | Warn when multiple files have shebangs |
+
+### Template Variables
+
+The `shebang` option supports template variables:
+
+```js
+replaceShebang({
+  shebang: '#!/usr/bin/env node # ${name} v${version}'
+})
+// Output: #!/usr/bin/env node # rollup-plugin-replace-shebang v2.0.0
+```
+
+### Include/Exclude Patterns
+
+```js
+replaceShebang({
+  include: ['src/cli.ts', 'src/bin/*.ts'],
+  exclude: ['node_modules/**', '**/*.test.ts']
+})
+```
 
 ## How it works
 
 1. **Transform phase**: Extracts and removes shebang from source files
 2. **RenderChunk phase**: Prepends shebang to the output bundle
+3. **WriteBundle phase**: Optionally sets executable permissions
+
+## Plugin API
+
+The plugin exposes an API for external access:
+
+```js
+const plugin = replaceShebang()
+
+// Get shebang for a specific file
+plugin.api.getShebang('/path/to/file.js')
+
+// Get all shebangs
+plugin.api.getAllShebangs()
+```
 
 ## Example
 

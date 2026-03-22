@@ -6,20 +6,29 @@
 
 一个 Rollup 插件，用于保留 shebang 并将其添加到输出文件顶部。
 
-[English](./README.md)
+[English](./README.md) | [文档](https://saqqdy.github.io/rollup-plugin-replace-shebang/zh/)
 
 ## 背景
 
 使用 Rollup 构建 CLI 工具时，入口文件顶部的 shebang（如 `#!/usr/bin/env node`）会在打包过程中被移除。本插件可确保 shebang 正确保留到最终输出中。
 
+## 在线示例
+
+通过 StackBlitz 在线体验：
+
+| 示例 | 说明 | 链接 |
+|------|------|------|
+| rollup-v2 | Rollup 2.x 模板变量示例 | [在 StackBlitz 中打开](https://stackblitz.com/github/saqqdy/rollup-plugin-replace-shebang/tree/master/examples/rollup-v2) |
+| rollup-v4 | Rollup 4.x 多文件项目 | [在 StackBlitz 中打开](https://stackblitz.com/github/saqqdy/rollup-plugin-replace-shebang/tree/master/examples/rollup-v4) |
+
 ## 安装
 
 ```bash
-# npm
-npm install -D rollup-plugin-replace-shebang
-
 # pnpm
 pnpm add -D rollup-plugin-replace-shebang
+
+# npm
+npm install -D rollup-plugin-replace-shebang
 ```
 
 ## 用法
@@ -35,8 +44,9 @@ export default {
   },
   plugins: [
     replaceShebang({
-      shebang: '#!/usr/bin/env node', // 自定义 shebang（可选）
-      skipBackslash: true // 保留反斜杠转义序列
+      shebang: '#!/usr/bin/env node',
+      skipBackslash: true,
+      chmod: true
     })
   ]
 }
@@ -46,13 +56,53 @@ export default {
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `shebang` | `string` | 原始 shebang | 自定义输出文件的 shebang |
+| `shebang` | `string` | 原始 shebang | 自定义 shebang。支持模板变量：`${name}`, `${version}` |
 | `skipBackslash` | `boolean` | `false` | 保留 `\u005c` 转义序列 |
+| `preserve` | `boolean` | `false` | 保留原始 shebang 不做修改 |
+| `chmod` | `boolean` | `false` | 自动设置可执行权限（chmod +x） |
+| `include` | `string \| string[]` | `['**/*.js', '**/*.ts', ...]` | 包含的文件 |
+| `exclude` | `string \| string[]` | `['node_modules/**']` | 排除的文件 |
+| `warnOnMultiple` | `boolean` | `true` | 多个文件包含 shebang 时警告 |
+
+### 模板变量
+
+`shebang` 选项支持模板变量：
+
+```js
+replaceShebang({
+  shebang: '#!/usr/bin/env node # ${name} v${version}'
+})
+// 输出: #!/usr/bin/env node # rollup-plugin-replace-shebang v2.0.0
+```
+
+### Include/Exclude 模式
+
+```js
+replaceShebang({
+  include: ['src/cli.ts', 'src/bin/*.ts'],
+  exclude: ['node_modules/**', '**/*.test.ts']
+})
+```
 
 ## 原理
 
 1. **Transform 阶段**：从源文件中提取并移除 shebang
 2. **RenderChunk 阶段**：将 shebang 添加到输出文件头部
+3. **WriteBundle 阶段**：可选设置可执行权限
+
+## 插件 API
+
+插件对外暴露 API 供外部访问：
+
+```js
+const plugin = replaceShebang()
+
+// 获取指定文件的 shebang
+plugin.api.getShebang('/path/to/file.js')
+
+// 获取所有 shebang
+plugin.api.getAllShebangs()
+```
 
 ## 示例
 

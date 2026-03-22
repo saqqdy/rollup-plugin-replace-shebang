@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import replaceShebang from '../src/index'
 
 describe('replace-shebang', () => {
@@ -6,6 +6,11 @@ describe('replace-shebang', () => {
 		it('should return plugin with correct name', () => {
 			const plugin = replaceShebang()
 			expect(plugin.name).toBe('replace-shebang')
+		})
+
+		it('should have version', () => {
+			const plugin = replaceShebang()
+			expect(plugin.version).toBe('2.0.0')
 		})
 
 		it('should have transform hook', () => {
@@ -18,6 +23,25 @@ describe('replace-shebang', () => {
 			const plugin = replaceShebang()
 			expect(plugin.renderChunk).toBeDefined()
 			expect(typeof plugin.renderChunk).toBe('function')
+		})
+
+		it('should have buildEnd hook', () => {
+			const plugin = replaceShebang()
+			expect(plugin.buildEnd).toBeDefined()
+			expect(typeof plugin.buildEnd).toBe('function')
+		})
+
+		it('should have writeBundle hook', () => {
+			const plugin = replaceShebang()
+			expect(plugin.writeBundle).toBeDefined()
+			expect(typeof plugin.writeBundle).toBe('function')
+		})
+
+		it('should expose api', () => {
+			const plugin = replaceShebang()
+			expect(plugin.api).toBeDefined()
+			expect(typeof plugin.api.getShebang).toBe('function')
+			expect(typeof plugin.api.getAllShebangs).toBe('function')
 		})
 	})
 
@@ -187,6 +211,159 @@ describe('replace-shebang', () => {
 			const result = plugin.transform!(code, '/path/to/test.js')
 
 			expect(result!.code).not.toContain('__u005c__')
+		})
+	})
+
+	describe('preserve option', () => {
+		it('should skip transform when preserve is true', () => {
+			const plugin = replaceShebang({ preserve: true })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const result = plugin.transform!(code, 'test.js')
+
+			expect(result).toBeNull()
+		})
+	})
+
+	describe('include/exclude options', () => {
+		it('should only process matching files', () => {
+			const plugin = replaceShebang({ include: ['**/*.ts'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'src/cli.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should exclude files matching exclude pattern', () => {
+			const plugin = replaceShebang({ exclude: ['node_modules'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'node_modules/pkg/index.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle string include option', () => {
+			const plugin = replaceShebang({ include: '**/*.ts' })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const result = plugin.transform!(code, 'src/cli.ts')
+
+			expect(result).not.toBeNull()
+		})
+	})
+
+	describe('template variables', () => {
+		it('should resolve name template variable', () => {
+			// eslint-disable-next-line no-template-curly-in-string
+			const plugin = replaceShebang({ shebang: '#!/usr/bin/env node # ${name}' })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/path/to/test.js')
+
+			const chunk = { facadeModuleId: '/path/to/test.js' } as any
+			const renderResult = plugin.renderChunk!('console.log("hello")', chunk, { sourcemap: false })
+
+			expect(renderResult!.code).toContain('rollup-plugin-replace-shebang')
+		})
+
+		it('should resolve version template variable', () => {
+			// eslint-disable-next-line no-template-curly-in-string
+			const plugin = replaceShebang({ shebang: '#!/usr/bin/env node # v${version}' })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/path/to/test.js')
+
+			const chunk = { facadeModuleId: '/path/to/test.js' } as any
+			const renderResult = plugin.renderChunk!('console.log("hello")', chunk, { sourcemap: false })
+
+			expect(renderResult!.code).toContain('v2.0.0')
+		})
+	})
+
+	describe('multiple shebangs warning', () => {
+		it('should warn when multiple files have shebangs', () => {
+			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+			const plugin = replaceShebang({ warnOnMultiple: true })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/a.js')
+			plugin.transform!(code, '/b.js')
+
+			expect(warnSpy).toHaveBeenCalled()
+			warnSpy.mockRestore()
+		})
+
+		it('should not warn when warnOnMultiple is false', () => {
+			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+			const plugin = replaceShebang({ warnOnMultiple: false })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/a.js')
+			plugin.transform!(code, '/b.js')
+
+			expect(warnSpy).not.toHaveBeenCalled()
+			warnSpy.mockRestore()
+		})
+	})
+
+	describe('plugin api', () => {
+		it('should get shebang via api', () => {
+			const plugin = replaceShebang()
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/test.js')
+
+			expect(plugin.api.getShebang('/test.js')).toBe('#!/usr/bin/env node')
+		})
+
+		it('should return undefined for unknown id', () => {
+			const plugin = replaceShebang()
+
+			expect(plugin.api.getShebang('/unknown.js')).toBeUndefined()
+		})
+
+		it('should get all shebangs via api', () => {
+			const plugin = replaceShebang()
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/a.js')
+			plugin.transform!('#!/usr/bin/env bun\nconsole.log("world")', '/b.js')
+
+			const all = plugin.api.getAllShebangs()
+
+			expect(all.size).toBe(2)
+			expect(all.get('/a.js')?.shebang).toBe('#!/usr/bin/env node')
+			expect(all.get('/b.js')?.shebang).toBe('#!/usr/bin/env bun')
+		})
+	})
+
+	describe('buildEnd hook', () => {
+		it('should have buildEnd hook defined', () => {
+			const plugin = replaceShebang()
+			expect(plugin.buildEnd).toBeDefined()
+		})
+	})
+
+	describe('shebang validation', () => {
+		it('should warn on invalid shebang format', () => {
+			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+			const plugin = replaceShebang()
+			// Invalid: doesn't start with #!/
+			const code = '#!invalid\nconsole.log("hello")'
+
+			plugin.transform!(code, '/test.js')
+
+			expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid shebang format'))
+			warnSpy.mockRestore()
 		})
 	})
 
