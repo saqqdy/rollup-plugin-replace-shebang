@@ -14,7 +14,13 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- **include/exclude patterns**: Filter files with glob patterns
+- **include/exclude patterns**: Filter files with glob patterns, supports:
+  - Exact match: `src/cli.ts`
+  - Extension match: `**/*.ts`
+  - Prefix match: `src/**`
+  - Directory match: `**/node_modules/**`
+  - Wildcard match: `src/*.test.ts`
+  - Plain string: `node_modules`
 - **chmod option**: Auto set executable permission on output files
 - **Template variables**: Use `${name}` and `${version}` in custom shebangs
 - **preserve mode**: Keep original shebang without modification
@@ -32,6 +38,7 @@ All notable changes to this project will be documented in this file.
 - Added `sideEffects: false` for better tree-shaking
 - Improved TypeScript configuration with strict mode
 - Converted source code comments to English
+- Unified pattern matching logic with reusable `matchPattern` helper
 
 ### Documentation
 
@@ -42,9 +49,14 @@ All notable changes to this project will be documented in this file.
 
 ### Testing
 
-- Added unit tests with Vitest (39 test cases)
+- Added unit tests with Vitest (58 test cases)
 - Added test coverage reporting
 - Added CI/CD with GitHub Actions (matrix: Node 18/20/22 × Rollup 2/3/4)
+
+### Fixed
+
+- TypeScript error: `chmod` property conflict in `writeBundle` options
+- ESLint warning: combined `let` declarations
 
 ### Removed
 

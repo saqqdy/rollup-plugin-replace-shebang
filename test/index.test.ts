@@ -1,3 +1,6 @@
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import replaceShebang from '../src/index'
 
@@ -256,6 +259,108 @@ describe('replace-shebang', () => {
 
 			expect(result).not.toBeNull()
 		})
+
+		it('should exclude files with /** pattern', () => {
+			const plugin = replaceShebang({ exclude: ['tests/**'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'lib/cli.js')
+			const resultExcluded = plugin.transform!(code, 'tests/subdir/cli.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle string exclude option', () => {
+			const plugin = replaceShebang({ exclude: 'node_modules/**' })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.js')
+			const resultExcluded = plugin.transform!(code, 'node_modules/pkg/index.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle prefix match for include', () => {
+			const plugin = replaceShebang({ include: ['src/**'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.js')
+			const resultExcluded = plugin.transform!(code, 'lib/cli.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle complex glob patterns', () => {
+			const plugin = replaceShebang({ include: ['**/*.ts'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/subdir/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'src/cli.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle exact match include', () => {
+			const plugin = replaceShebang({ include: ['src/cli.ts'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'src/other.ts')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle regex pattern matching', () => {
+			const plugin = replaceShebang({ include: ['src/*.ts'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'src/sub/cli.ts')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle **/dir/** pattern for exclude', () => {
+			const plugin = replaceShebang({ exclude: ['**/node_modules/**'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.js')
+			const resultExcluded = plugin.transform!(code, 'src/node_modules/pkg/index.js')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle both include and exclude together', () => {
+			const plugin = replaceShebang({
+				include: ['src/**'],
+				exclude: ['src/*.test.ts']
+			})
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'src/cli.test.ts')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
+
+		it('should handle plain string exclude pattern', () => {
+			const plugin = replaceShebang({ exclude: ['tests'] })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			const resultIncluded = plugin.transform!(code, 'src/cli.ts')
+			const resultExcluded = plugin.transform!(code, 'tests/cli.test.ts')
+
+			expect(resultIncluded).not.toBeNull()
+			expect(resultExcluded).toBeNull()
+		})
 	})
 
 	describe('template variables', () => {
@@ -283,6 +388,19 @@ describe('replace-shebang', () => {
 			const renderResult = plugin.renderChunk!('console.log("hello")', chunk, { sourcemap: false })
 
 			expect(renderResult!.code).toContain('v2.0.0')
+		})
+
+		it('should handle unknown template variable', () => {
+			// eslint-disable-next-line no-template-curly-in-string
+			const plugin = replaceShebang({ shebang: '#!/usr/bin/env node # ${unknown}' })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/path/to/test.js')
+
+			const chunk = { facadeModuleId: '/path/to/test.js' } as any
+			const renderResult = plugin.renderChunk!('console.log("hello")', chunk, { sourcemap: false })
+
+			expect(renderResult!.code).toContain('#!/usr/bin/env node # ')
 		})
 	})
 
@@ -349,6 +467,152 @@ describe('replace-shebang', () => {
 		it('should have buildEnd hook defined', () => {
 			const plugin = replaceShebang()
 			expect(plugin.buildEnd).toBeDefined()
+		})
+
+		it('should call buildEnd without error', () => {
+			const plugin = replaceShebang()
+			expect(() => plugin.buildEnd!()).not.toThrow()
+		})
+	})
+
+	describe('writeBundle hook', () => {
+		it('should handle chmod option with file output', async () => {
+			const plugin = replaceShebang({ chmod: true })
+			const code = '#!/usr/bin/env node\nconsole.log("hello")'
+
+			plugin.transform!(code, '/test.js')
+
+			const chunk = { facadeModuleId: '/test.js' } as any
+			plugin.renderChunk!('console.log("hello")', chunk, { sourcemap: false })
+
+			// Test writeBundle with file output option
+			const bundle = {
+				'output.js': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ file: '/tmp/output.js' }, bundle)
+			).resolves.toBeUndefined()
+		})
+
+		it('should handle chmod option with dir output', async () => {
+			const plugin = replaceShebang({ chmod: true })
+
+			const bundle = {
+				'output.js': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ dir: '/tmp/dist' }, bundle)
+			).resolves.toBeUndefined()
+		})
+
+		it('should handle chmod with default dist directory', async () => {
+			const plugin = replaceShebang({ chmod: true })
+
+			const bundle = {
+				'output.js': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				}
+			} as any
+
+			// Should not throw - tests the 'dist' default
+			await expect(
+				plugin.writeBundle!({}, bundle)
+			).resolves.toBeUndefined()
+		})
+
+		it('should successfully chmod existing file', async () => {
+			const plugin = replaceShebang({ chmod: true })
+
+			// Create a temp directory and file
+			const tempDir = join(tmpdir(), 'rollup-plugin-replace-shebang-test')
+			mkdirSync(tempDir, { recursive: true })
+			const tempFile = join(tempDir, 'output.js')
+			writeFileSync(tempFile, '#!/usr/bin/env node\nconsole.log("hello")')
+
+			const bundle = {
+				'output.js': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ file: tempFile }, bundle)
+			).resolves.toBeUndefined()
+
+			// Cleanup
+			rmSync(tempDir, { recursive: true, force: true })
+		})
+
+		it('should skip chmod for non-js files', async () => {
+			const plugin = replaceShebang({ chmod: true })
+
+			const bundle = {
+				'output.txt': {
+					code: 'some text'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ file: '/tmp/output.txt' }, bundle)
+			).resolves.toBeUndefined()
+		})
+
+		it('should skip chmod when file does not start with shebang', async () => {
+			const plugin = replaceShebang({ chmod: true })
+
+			const bundle = {
+				'output.js': {
+					code: 'console.log("hello")'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ file: '/tmp/output.js' }, bundle)
+			).resolves.toBeUndefined()
+		})
+
+		it('should skip chmod when chmod option is false', async () => {
+			const plugin = replaceShebang({ chmod: false })
+
+			const bundle = {
+				'output.js': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ file: '/tmp/output.js' }, bundle)
+			).resolves.toBeUndefined()
+		})
+
+		it('should handle mjs and cjs extensions', async () => {
+			const plugin = replaceShebang({ chmod: true })
+
+			const bundle = {
+				'output.mjs': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				},
+				'output.cjs': {
+					code: '#!/usr/bin/env node\nconsole.log("hello")'
+				}
+			} as any
+
+			// Should not throw
+			await expect(
+				plugin.writeBundle!({ dir: '/tmp/dist' }, bundle)
+			).resolves.toBeUndefined()
 		})
 	})
 

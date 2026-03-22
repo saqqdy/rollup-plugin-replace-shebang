@@ -77,6 +77,17 @@ replaceShebang({
 
 ### Include/Exclude Patterns
 
+The plugin supports various glob patterns for filtering files:
+
+| Pattern | Example | Matches |
+|---------|---------|---------|
+| Exact match | `src/cli.ts` | Only `src/cli.ts` |
+| Extension match | `**/*.ts` | Any `.ts` file in any directory |
+| Prefix match | `src/**` | Any file under `src/` |
+| Directory match | `**/node_modules/**` | Any file in `node_modules` anywhere |
+| Wildcard match | `src/*.test.ts` | `src/foo.test.ts` but not `src/sub/foo.test.ts` |
+| Plain string | `node_modules` | Any path containing `node_modules` |
+
 ```js
 replaceShebang({
   include: ['src/cli.ts', 'src/bin/*.ts'],

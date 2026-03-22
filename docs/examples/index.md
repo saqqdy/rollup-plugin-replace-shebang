@@ -35,3 +35,16 @@ pnpm run build
 | warnOnMultiple | ✓ | ✓ |
 | skipBackslash | - | ✓ (config) |
 | Multi-file | ✓ | ✓ |
+
+## Pattern Matching
+
+The plugin supports various glob patterns for `include` and `exclude`:
+
+| Pattern | Example | Matches |
+|---------|---------|---------|
+| Exact match | `src/cli.ts` | Only `src/cli.ts` |
+| Extension match | `**/*.ts` | Any `.ts` file |
+| Prefix match | `src/**` | Any file under `src/` |
+| Directory match | `**/node_modules/**` | Any file in `node_modules` |
+| Wildcard match | `src/*.test.ts` | `src/foo.test.ts` only |
+| Plain string | `node_modules` | Any path containing `node_modules` |

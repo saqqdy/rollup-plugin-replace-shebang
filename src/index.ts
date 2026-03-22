@@ -83,34 +83,41 @@ function createFilter(
 	const includePatterns = include ? (Array.isArray(include) ? include : [include]) : null
 	const excludePatterns = exclude ? (Array.isArray(exclude) ? exclude : [exclude]) : null
 
+	/**
+	 * Check if a pattern matches the given id
+	 */
+	function matchPattern(pattern: string, id: string): boolean {
+		// Exact match
+		if (id === pattern) return true
+		// Extension match (e.g., **/*.ts)
+		if (pattern.startsWith('**/*.') && id.endsWith(pattern.slice(4))) return true
+		// Prefix match (e.g., src/**)
+		if (pattern.endsWith('/**') && id.startsWith(pattern.slice(0, -3))) return true
+		// Directory contains match (e.g., **/node_modules/**)
+		if (pattern.startsWith('**/') && pattern.endsWith('/**')) {
+			const segment = pattern.slice(3, -3)
+			return id.includes(`/${segment}/`) || id.startsWith(`${segment}/`)
+		}
+		// Wildcard match
+		if (pattern.includes('*')) {
+			return patternToRegex(pattern).test(id)
+		}
+		// Plain string match - check if id contains the pattern as a path segment
+		return id.includes(`/${pattern}/`) || id.includes(pattern)
+	}
+
 	return (id: string) => {
 		// Check exclude first
 		if (excludePatterns) {
 			for (const pattern of excludePatterns) {
-				if (id.includes(pattern.replace(/\*\*/g, '').replace(/\*/g, ''))) {
-					return false
-				}
-				// Simple glob matching
-				if (pattern.endsWith('/**') && id.startsWith(pattern.slice(0, -3))) {
-					return false
-				}
+				if (matchPattern(pattern, id)) return false
 			}
 		}
 
 		// Check include
 		if (includePatterns) {
 			for (const pattern of includePatterns) {
-				// Exact match
-				if (id === pattern) return true
-				// Extension match (e.g., **/*.ts)
-				if (pattern.startsWith('**/*.') && id.endsWith(pattern.slice(4))) return true
-				// Prefix match (e.g., src/**)
-				if (pattern.endsWith('/**') && id.startsWith(pattern.slice(0, -3))) return true
-				// Contains match
-				if (pattern.includes('*')) {
-					const regex = patternToRegex(pattern)
-					if (regex.test(id)) return true
-				}
+				if (matchPattern(pattern, id)) return true
 			}
 			return false
 		}

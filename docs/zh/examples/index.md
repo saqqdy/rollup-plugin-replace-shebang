@@ -35,3 +35,16 @@ pnpm run build
 | warnOnMultiple | ✓ | ✓ |
 | skipBackslash | - | ✓ (配置) |
 | 多文件 | ✓ | ✓ |
+
+## 模式匹配
+
+插件支持多种 glob 模式用于 `include` 和 `exclude`：
+
+| 模式 | 示例 | 匹配 |
+|------|------|------|
+| 精确匹配 | `src/cli.ts` | 仅 `src/cli.ts` |
+| 扩展名匹配 | `**/*.ts` | 任意 `.ts` 文件 |
+| 前缀匹配 | `src/**` | `src/` 下所有文件 |
+| 目录匹配 | `**/node_modules/**` | 任意位置的 `node_modules` |
+| 通配符匹配 | `src/*.test.ts` | 仅 `src/foo.test.ts` |
+| 纯字符串 | `node_modules` | 任何包含 `node_modules` 的路径 |

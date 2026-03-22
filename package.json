@@ -2,7 +2,7 @@
 	"name": "rollup-plugin-replace-shebang",
 	"description": "A Rollup plugin that preserves and relocates shebang to the output bundle.",
 	"version": "2.0.0",
-	"packageManager": "pnpm@9.15.0",
+	"packageManager": "pnpm@9.15.9",
 	"type": "module",
 	"main": "dist/index.cjs",
 	"module": "dist/index.mjs",
@@ -26,6 +26,7 @@
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",
 		"docs:preview": "vitepress preview docs",
+		"deploy": "sh scripts/deploy.sh",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
@@ -38,19 +39,19 @@
 		"prepublishOnly": "pnpm run build"
 	},
 	"dependencies": {
-		"magic-string": "^0.30.17"
+		"magic-string": "^0.30.21"
 	},
 	"devDependencies": {
 		"@eslint-sets/eslint-config": "^6.2.0",
-		"@types/node": "^22.13.10",
-		"@vitest/coverage-v8": "^4.1.0",
+		"@types/node": "^24.12.0",
+		"@vitest/coverage-v8": "^3.2.4",
 		"eslint": "^9.39.4",
-		"rollup": "^4.35.0",
+		"rollup": "^4.59.1",
 		"tsdown": "^0.21.4",
 		"tsx": "^4.21.0",
-		"typescript": "^5.8.2",
-		"vitepress": "^1.6.3",
-		"vitest": "^4.1.0"
+		"typescript": "^5.9.3",
+		"vitepress": "^1.6.4",
+		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
 		"rollup": ">=2.0.0"

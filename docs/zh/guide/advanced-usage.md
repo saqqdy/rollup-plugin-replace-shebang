@@ -11,6 +11,17 @@ replaceShebang({
 })
 ```
 
+### 支持的模式类型
+
+| 模式 | 示例 | 匹配 |
+|------|------|------|
+| 精确匹配 | `src/cli.ts` | 仅 `src/cli.ts` |
+| 扩展名匹配 | `**/*.ts` | 任意目录下的 `.ts` 文件 |
+| 前缀匹配 | `src/**` | `src/` 下的所有文件 |
+| 目录匹配 | `**/node_modules/**` | 任意位置的 `node_modules` 目录 |
+| 通配符匹配 | `src/*.test.ts` | `src/foo.test.ts` 但不包括 `src/sub/foo.test.ts` |
+| 纯字符串 | `node_modules` | 任何包含 `node_modules` 的路径 |
+
 ### 默认模式
 
 ::: details 默认 include 模式
