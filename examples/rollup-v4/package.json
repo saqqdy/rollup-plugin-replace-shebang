@@ -11,6 +11,6 @@
 		"rollup": "^4.35.0"
 	},
 	"dependencies": {
-		"rollup-plugin-replace-shebang": "link:../.."
+		"rollup-plugin-replace-shebang": "2.0.0"
 	}
 }

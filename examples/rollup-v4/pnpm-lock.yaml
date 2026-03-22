@@ -9,14 +9,17 @@ importers:
   .:
     dependencies:
       rollup-plugin-replace-shebang:
-        specifier: link:../..
-        version: link:../..
+        specifier: 2.0.0
+        version: 2.0.0(rollup@4.59.1)
     devDependencies:
       rollup:
         specifier: ^4.35.0
         version: 4.59.1
 
 packages:
+
+  '@jridgewell/sourcemap-codec@1.5.5':
+    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
   '@rollup/rollup-android-arm-eabi@4.59.1':
     resolution: {integrity: sha512-xB0b51TB7IfDEzAojXahmr+gfA00uYVInJGgNNkeQG6RPnCPGr7udsylFLTubuIUSRE6FkcI1NElyRt83PP5oQ==}
@@ -164,12 +167,23 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+  magic-string@0.30.21:
+    resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+
+  rollup-plugin-replace-shebang@2.0.0:
+    resolution: {integrity: sha512-ViTNI4IOTgjyD6Y09XkYK0FWf88toBc60FsktCeghLXvZgPSzrxuayIb2JbHGo4bRDevZn/2Z6BInrPaubs5pg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      rollup: '>=2.0.0'
+
   rollup@4.59.1:
     resolution: {integrity: sha512-iZKH8BeoCwTCBTZBZWQQMreekd4mdomwdjIQ40GC1oZm6o+8PnNMIxFOiCsGMWeS8iDJ7KZcl7KwmKk/0HOQpA==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
 snapshots:
+
+  '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@rollup/rollup-android-arm-eabi@4.59.1':
     optional: true
@@ -250,6 +264,15 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
+
+  magic-string@0.30.21:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.5
+
+  rollup-plugin-replace-shebang@2.0.0(rollup@4.59.1):
+    dependencies:
+      magic-string: 0.30.21
+      rollup: 4.59.1
 
   rollup@4.59.1:
     dependencies:
