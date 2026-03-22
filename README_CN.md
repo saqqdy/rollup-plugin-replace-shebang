@@ -134,7 +134,7 @@ program.parse()
 ## 要求
 
 - Rollup >= 2.0.0
-- Node.js >= 18
+- Node.js >= 12
 
 ## 反馈
 

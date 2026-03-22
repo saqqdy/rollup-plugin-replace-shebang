@@ -6,7 +6,6 @@ All notable changes to this project will be documented in this file.
 
 ### Breaking Changes
 
-- Dropped support for Node.js < 18
 - Changed output file paths:
   - ESM: `es/index.mjs` → `dist/index.mjs`
   - CJS: `lib/index.js` → `dist/index.cjs`
