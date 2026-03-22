@@ -10,6 +10,7 @@ export default defineConfig({
 	clean: true,
 	sourcemap: true,
 	minify: false,
+	target: 'es2019',
 	banner: {
 		js: `/*!
  * ${pkg.name} v${pkg.version}
